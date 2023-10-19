@@ -4,16 +4,20 @@ import Image from 'next/image'
 // Use components/ provider due to add use-client for App Router
 // See: https://portal.thirdweb.com/react/getting-started
 import { ThirdwebProvider } from "./components/ThirdwebProvider";
-import {coinbaseWallet, ConnectWallet, metamaskWallet, walletConnect } from "@thirdweb-dev/react";
+import { ConnectWallet, coinbaseWallet, metamaskWallet, walletConnect, WalletConfig } from "@thirdweb-dev/react";
+import Transfer from "@/app/components/Transfer";
 
 export default function Home() {
+
   return (
       <ThirdwebProvider
           activeChain="mumbai"
           clientId="72768a8a6a8072084620b1c8b4fe56c4"
-          supportedWallets={[metamaskWallet(), coinbaseWallet(), walletConnect()]}
+          supportedWallets={[metamaskWallet(), coinbaseWallet(), walletConnect()] as WalletConfig<any>[]}
       >
         <ConnectWallet />
+        <Transfer />
+
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
           <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
             <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
