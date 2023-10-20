@@ -1,46 +1,46 @@
 import { useSDK } from "@thirdweb-dev/react";
 import { useState } from "react";
 import { ethers } from "ethers";
+import LoadingSpinner from "@/app/components/LoadingSpinner";
 
-export default function Transfer() {
+export default function NativeTransfer() {
     const sdk = useSDK();
-
-    const [transferAmount, setTransferAmount] = useState("0");
-    const [transferAmountIsValid, setTransferAmountIsValid] = useState(true);
-    const [transferDestination, setTransferDestination] = useState(null);
+    const [amount, setAmount] = useState("0");
+    const [amountIsValid, setAmountIsValid] = useState(true);
+    const [destination, setDestination] = useState(null);
     const [destinationIsEdited, setDestinationIsEdited] = useState(false);
-    const [transferDestinationIsValid, setTransferDestinationIsValid] = useState(false);
-    const [explorerLink, setExplorerLink] = useState("");
+    const [destinationIsValid, setDestinationIsValid] = useState(false);
+    const [explorerLink, setExplorerLink] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleAmountChange = (e) => {
         const selectedAmount = e.target.value;
         if (selectedAmount <= 0) {
-            setTransferAmountIsValid(false);
+            setAmountIsValid(false);
         } else {
-            setTransferAmountIsValid(true);
+            setAmountIsValid(true);
         }
         setExplorerLink(null);
-        setTransferAmount(e.target.value);
+        setAmount(e.target.value);
     }
 
     const handleTransferDestinationAddressChange = (e) => {
         const selectedAddress = e.target.value;
         setDestinationIsEdited(true);
         if (selectedAddress == ethers.constants.AddressZero || !ethers.utils.isAddress(selectedAddress)) {
-            setTransferDestinationIsValid(false);
+            setDestinationIsValid(false);
         } else {
-            setTransferDestinationIsValid(true);
+            setDestinationIsValid(true);
         }
         setExplorerLink(null);
-        setTransferDestination(e.target.value);
+        setDestination(e.target.value);
     }
 
     const handleTransferSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const txResult = await sdk.wallet.transfer(transferDestination, transferAmount);
+            const txResult = await sdk.wallet.transfer(destination, amount);
             const receipt = await txResult.receipt;
             setLoading(false);
             if (receipt.status === 1 && receipt.transactionHash) {
@@ -51,8 +51,8 @@ export default function Transfer() {
         } catch (error) {
             alert("transfer failed - check wallet")
             setLoading(false);
-            setTransferAmountIsValid(false);
-            setTransferDestinationIsValid(false);
+            setAmountIsValid(false);
+            setDestinationIsValid(false);
             setDestinationIsEdited(false);
         }
     }
@@ -65,16 +65,16 @@ export default function Transfer() {
             >
                 <div className="mb-4">
                     {(!loading ) ? (
-                        <h3 className="block text-center text-gray-700 text-m font-bold mb-2">Transfer</h3>
+                        <h3 className="block text-center text-gray-700 text-m font-bold mb-2">Transfer MATIC</h3>
                     ) : (
-                        <h3 className="block text-center text-green-700 text-m font-bold mb-2 animate-pulse">Pending Transfer...</h3>
+                        <h3 className="block text-center text-violet-700 text-m font-bold mb-2 animate-pulse">Pending Transfer...</h3>
                     )}
 
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
                         Amount
                     </label>
                     <input
-                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-3 ${!transferAmountIsValid ? 'border-red-500' : ''}`}
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-3 ${!amountIsValid ? 'border-red-500' : ''}`}
                         id="amount"
                         type="number"
                         step="0.00001"
@@ -83,7 +83,7 @@ export default function Transfer() {
                         disabled={loading}
                         onChange={(e) => handleAmountChange(e)}
                     />
-                    {!transferAmountIsValid && (
+                    {!amountIsValid && (
                         <p className="text-red-500 text-xs italic">Please choose a valid amount</p>
                     )}
                 </div>
@@ -92,28 +92,32 @@ export default function Transfer() {
                         Destination
                     </label>
                     <input
-                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${destinationIsEdited && !transferDestinationIsValid ? 'border-red-500' : ''}`}
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${destinationIsEdited && !destinationIsValid ? 'border-red-500' : ''}`}
                         id="destination"
                         type="text"
                         placeholder="0x..."
                         disabled={loading}
                         onChange={(e) => handleTransferDestinationAddressChange(e)}
                     />
-                    {(destinationIsEdited && !transferDestinationIsValid) && (
+                    {(destinationIsEdited && !destinationIsValid) && (
                         <p className="text-red-500 text-xs italic">Please choose a valid address</p>
                     )}
 
                 </div>
                 <div className="flex items-center justify-between">
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400 mb-4"
+                        className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 min-w-full rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400 mb-4"
                         type="submit"
-                        disabled={!transferAmountIsValid || !transferDestinationIsValid || loading}
+                        disabled={!amountIsValid || !destinationIsValid || loading}
                     >
-                        Transfer
+                        {loading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            'Transfer'
+                        )}
                     </button>
                 </div>
-                {(explorerLink !== "") && (
+                {(explorerLink) && (
                     <>
                         <p className="text-green-500 text-xs italic">Success:{' '}
                             <a className="text-blue-500 text-xs underline" href={explorerLink} target="_blank">Explorer Confirmation</a>
