@@ -1,13 +1,12 @@
-import {useContract, useContractRead, useSDK} from "@thirdweb-dev/react";
+import { useContract } from "@thirdweb-dev/react";
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
 export default function TokenTransfer() {
-    const sdk = useSDK();
     const [amount, setAmount] = useState("0");
     const [amountIsValid, setAmountIsValid] = useState(true);
-    const [destination, setDestination] = useState(null);
+    const [destination, setDestination] = useState<string |null>(null);
     const [destinationIsEdited, setDestinationIsEdited] = useState(false);
     const [destinationIsValid, setDestinationIsValid] = useState(false);
     const [explorerLink, setExplorerLink] = useState("");
@@ -23,18 +22,21 @@ export default function TokenTransfer() {
     const contractAddress = "0x8830D3646E5432970871e60c18BF6eB2a279517b";
     const { contract } = useContract(contractAddress);
 
-    const handleAmountChange = (e) => {
-        const selectedAmount = e.target.value;
-        if (selectedAmount <= 0) {
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputAmount = parseFloat(e.target.value);
+        if (isNaN(inputAmount)) {
             setAmountIsValid(false);
+            setExplorerLink("");
+            setAmount("");
         } else {
+            const amountInWei = inputAmount * 10 ** 18;
+            setAmount(amountInWei.toString());
             setAmountIsValid(true);
+            setExplorerLink("");
         }
-        setExplorerLink("");
-        setAmount(((e.target.value)*10**18).toString());
     }
 
-    const handleTransferDestinationAddressChange = (e) => {
+    const handleTransferDestinationAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedAddress = e.target.value;
         setDestinationIsEdited(true);
         if (selectedAddress == ethers.constants.AddressZero || !ethers.utils.isAddress(selectedAddress)) {
@@ -46,7 +48,7 @@ export default function TokenTransfer() {
         setDestination(e.target.value);
     }
 
-    const handleBalanceAddressChange = (e) => {
+    const handleBalanceAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedAddress = e.target.value;
         setBalanceAddressIsEdited(true);
         setBalance(null);
@@ -58,12 +60,12 @@ export default function TokenTransfer() {
         setBalanceAddress(e.target.value);
     }
 
-    const handleTransferSubmit = async (e) => {
+    const handleTransferSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setTransferLoading(true);
         setExplorerLink("");
         try {
-            const { receipt }  = await contract.call("transfer", [destination, amount]);
+            const { receipt }  = await contract?.call("transfer", [destination, amount]);
             if (receipt.status === 1 && receipt.transactionHash) {
                 // TODO: configuration for any explorer centrally
                 const explorerUrl = "https://mumbai.polygonscan.com/tx/"
@@ -75,11 +77,11 @@ export default function TokenTransfer() {
         setTransferLoading(false);
     }
 
-    const handleBalanceSubmit = async (e) => {
+    const handleBalanceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setBalanceAddressLoading(true);
         try {
-            const data = await contract.call("balanceOf", [balanceAddress]);
+            const data = await contract?.call("balanceOf", [balanceAddress]);
             const tokens = data/10**18;
             setBalance(tokens?.toString());
         } catch (error) {

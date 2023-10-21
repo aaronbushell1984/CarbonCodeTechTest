@@ -1,11 +1,10 @@
 "use client";
-import Image from 'next/image'
 
 // Use components/ provider due to add use-client for App Router
 // See: https://portal.thirdweb.com/react/getting-started
 import { ThirdwebProvider } from "./components/ThirdwebProvider";
 import { ConnectWallet, coinbaseWallet, metamaskWallet, walletConnect, WalletConfig } from "@thirdweb-dev/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NativeTransfer from "@/app/components/NativeTransfer";
 import TokenTransfer from "@/app/components/TokenTransfer";
 

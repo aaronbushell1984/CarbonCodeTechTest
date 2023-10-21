@@ -1,5 +1,5 @@
-import { useSDK } from "@thirdweb-dev/react";
-import { useState } from "react";
+import { AddressOrEns, useSDK } from "@thirdweb-dev/react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
@@ -7,14 +7,14 @@ export default function NativeTransfer() {
     const sdk = useSDK();
     const [amount, setAmount] = useState("0");
     const [amountIsValid, setAmountIsValid] = useState(true);
-    const [destination, setDestination] = useState(null);
+    const [destination, setDestination] = useState<string | null>(null);
     const [destinationIsEdited, setDestinationIsEdited] = useState(false);
     const [destinationIsValid, setDestinationIsValid] = useState(false);
     const [explorerLink, setExplorerLink] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const handleAmountChange = (e) => {
-        const selectedAmount = e.target.value;
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedAmount = parseFloat(e.target.value);
         if (selectedAmount <= 0) {
             setAmountIsValid(false);
         } else {
@@ -24,7 +24,7 @@ export default function NativeTransfer() {
         setAmount(e.target.value);
     }
 
-    const handleTransferDestinationAddressChange = (e) => {
+    const handleTransferDestinationAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedAddress = e.target.value;
         setDestinationIsEdited(true);
         if (selectedAddress == ethers.constants.AddressZero || !ethers.utils.isAddress(selectedAddress)) {
@@ -36,14 +36,14 @@ export default function NativeTransfer() {
         setDestination(e.target.value);
     }
 
-    const handleTransferSubmit = async (e) => {
+    const handleTransferSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const txResult = await sdk.wallet.transfer(destination, amount);
-            const receipt = await txResult.receipt;
+            const txResult = await sdk?.wallet.transfer(destination as AddressOrEns, amount);
+            const receipt = await txResult?.receipt;
             setLoading(false);
-            if (receipt.status === 1 && receipt.transactionHash) {
+            if (receipt?.status === 1 && receipt?.transactionHash) {
                 // TODO: configuration for any explorer centrally
                 const explorerUrl = "https://mumbai.polygonscan.com/tx/"
                 setExplorerLink(`${explorerUrl}${receipt.transactionHash}`)
