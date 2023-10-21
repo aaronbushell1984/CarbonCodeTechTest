@@ -87,7 +87,7 @@ After wallet connection, fetch and display the current balance of the connected 
 Write a Solidity smart contract that represents a simple asset with a fixed supply on the
 ~~Polygon~~ **Mumbai** (Polygon test) network.
 
-> @Aaron - "Modern contracts widely use industry standards such as open zeppelin, ERC proposals and services such as thirdweb. Token contract at _lib/contracts/prebuilts/token/TokenERC20.sol_ is audited, robust and feature rich."
+> @Aaron - "Modern contracts widely use industry standards such as open zeppelin, ERC proposals and services such as thirdweb. Token contract: [TokenERC20.sol](lib/contracts/contracts/prebuilts/token/TokenERC20.sol) is audited, robust and feature rich."
 
 **Requirements**
 
