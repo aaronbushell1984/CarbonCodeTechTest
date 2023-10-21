@@ -180,6 +180,18 @@ nvm install 20
 
 [Installation Documentation](https://book.getfoundry.sh/getting-started/installation)
 
+- Install Thirdweb contracts
+
+```bash
+forge install https://github.com/thirdweb-dev/contracts
+```
+
+- Install project dependencies
+
+```bash
+yarn
+```
+
 - Switch to contracts directory
 
 ```bash
