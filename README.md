@@ -32,6 +32,8 @@ After wallet connection, fetch and display the current balance of the connected 
 
 ---
 
+> @Aaron - "Connect button with wallet and balance"
+
 ![wallet.png](assets/wallet.png)
 
 ---
@@ -50,7 +52,7 @@ After wallet connection, fetch and display the current balance of the connected 
 
 ![pending-transfer.png](assets/pending-transfer.png)
 
-> @Aaron - "Awaiting metamask confirmation and block confirmation"
+> @Aaron - "Wallet confirmation - Metamask, Coinbase or WalletConnect can be used"
 
 ![metamask-approval.png](assets/metamask-approval.png)
 
@@ -61,6 +63,8 @@ After wallet connection, fetch and display the current balance of the connected 
 
 ---
 
+> @Aaron - "Success with link"
+
 ![confirmation.png](assets/confirmation.png)
 
 ---
@@ -70,7 +74,7 @@ After wallet connection, fetch and display the current balance of the connected 
 
 ---
 
-> @Aaron - "Link directs to appropriate explorer and only appears when available"
+> @Aaron - "Link directs to appropriate explorer and only appears when available (hash is hidden from user to be cleaner)"
 
 ![explorer-link.png](assets/explorer-link.png)
 
