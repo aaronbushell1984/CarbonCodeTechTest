@@ -170,6 +170,12 @@ Pre-Req:
 
 ---
 
+- Clone repo
+
+```bash
+git clone https://github.com/aaronbushell1984/CarbonCodeTechTest
+```
+
 - Install Node 20. Assuming nvm is installed:
 
 ```bash
